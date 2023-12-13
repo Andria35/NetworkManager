@@ -25,7 +25,7 @@ public actor NetworkManager {
     private func decodeData<T: Decodable>(with data: Data) async throws -> T {
         do {
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let object = try decoder.decode(T.self, from: data)
             return object
         } catch {
