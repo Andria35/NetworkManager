@@ -4,17 +4,16 @@
 import UIKit
 
 @available(iOS 13.0.0, *)
-public actor NetworkManager {
-        
-    public static let shared = NetworkManager()
-    
-    private init() {}
+public actor NetworkManager: APIServices {
+            
+    public init() {}
     
     private func downloadData(fromURL urlString: String) async throws -> Data {
         
         guard let url = URL(string: urlString) else { throw GHError.invalidURL }
         
         let (data, response) = try await URLSession.shared.data(from: url)
+        
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw GHError.invalidResponse
         }
@@ -25,7 +24,6 @@ public actor NetworkManager {
     private func decodeData<T: Decodable>(with data: Data) async throws -> T {
         do {
             let decoder = JSONDecoder()
-//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let object = try decoder.decode(T.self, from: data)
             return object
         } catch {
@@ -53,13 +51,5 @@ public actor NetworkManager {
         } catch {
             throw error
         }
-        
     }
-}
-
-
-enum GHError: Error {
-    case invalidURL
-    case invalidResponse
-    case invalidData
 }
